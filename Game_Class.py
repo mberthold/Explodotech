@@ -2,7 +2,7 @@ import Vessel_Class as vc
 import threading
 import time
 
-class Space:
+class Game:
     vessels = []
     polling = True
     pollingInterval = 1.0
@@ -36,6 +36,8 @@ class Space:
     def mainLoop (self):
         while self.polling:
             time.sleep(self.pollingInterval)
+            print(time.time_ns())
+            
             for v in self.vessels:
                 v.xSpeed = v.xSpeed * self.pollingInterval
                 v.updatePosition()

@@ -7,9 +7,9 @@ import tkinter as tk
 
 # Import my own stuff
 import Vessel_Class
-import Space_Class
+import Game_Class
 
-space = Space_Class.Space()
+space = Game_Class.Game()
 running = True
 
 # Initialize
