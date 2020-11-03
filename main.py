@@ -19,7 +19,7 @@ def Initialize():
     global updateThread
     space.spawnVessel(0.0, 0.0, "Rocinate")
     print ("Ship spawned... \n\r")
-    space.spawnVessel(5.0, 0.0)
+    space.spawnVessel(5.0, 0.0,  "Borg Cube")
     #space.vessels[1].xSpeed = -1.0
     print ("Missile spawned... \n\r")
     space.t1.start()
@@ -34,21 +34,24 @@ def guiQuit():
     root.destroy()
     space.polling = False
     running = False
+    print("GTFO!")
 
 def btnLaunch_Event():
     global space
     print("Launchbutton pressed!")
-    space.vessels[1].setSpeed(-1.0)
-   
+    space.spawnProjectile(target = space.vessels[0], origin = space.vessels[1], speed = 1.0) #  target, origin, speed, posx = None, posy = None)    
+
 
 def updateGUI():
     global running
     while running:
-        lblShipX['text'] = space.vessels[0].posX
-        lblShipY['text'] = space.vessels[0].posY
-        lblMissileX['text'] = space.vessels[1].posX
-        lblMissileY['text'] = space.vessels[1].posY
-        lblMissileSpeed['text'] = space.vessels[1].xSpeed
+        lblShipX['text'] = round(space.vessels[0].posX, 2)
+        lblShipY['text'] = round(space.vessels[0].posY, 2)
+        if len(space.vessels) > 2:
+            lblMissileX['text'] = round(space.vessels[2].posX, 2)
+            lblMissileY['text'] = round(space.vessels[2].posY, 2)
+            lblMissileSpeed['text'] = space.vessels[2].xSpeed
+            lblMissileDistance['text'] = round(space.vessels[2].targetDistance, 2)
         time.sleep(0.1)
 
 updateThread = threading.Thread(target = updateGUI)
