@@ -3,6 +3,7 @@ import threading
 import time
 import os
 import tkinter as tk
+import numpy as np
 
 
 # Import my own stuff
@@ -17,10 +18,10 @@ def Initialize():
     print ("Initializing... \n\r")
     global space
     global updateThread
-    space.spawnVessel(0.0, 0.0, "Rocinate")
+    space.spawnVessel(np.array([5.0 , 0.0]), "Rocinante")
     print ("Ship spawned... \n\r")
-    space.spawnVessel(5.0, 0.0,  "Borg Cube")
-    #space.vessels[1].xSpeed = -1.0
+    space.spawnVessel(np.array([0.0 , 0.0]),  "Borg Cube")
+    space.vessels[0].velocity[0] = 0.5
     print ("Missile spawned... \n\r")
     space.t1.start()
     print ("Space loop started... \n\r")
@@ -31,9 +32,10 @@ def Initialize():
 # GUI functions
 def guiQuit():
     global running
-    root.destroy()
+    
     space.polling = False
     running = False
+    root.destroy()
     print("GTFO!")
 
 def btnLaunch_Event():
@@ -45,14 +47,18 @@ def btnLaunch_Event():
 def updateGUI():
     global running
     while running:
-        lblShipX['text'] = round(space.vessels[0].posX, 2)
-        lblShipY['text'] = round(space.vessels[0].posY, 2)
-        if len(space.vessels) > 2:
-            lblMissileX['text'] = round(space.vessels[2].posX, 2)
-            lblMissileY['text'] = round(space.vessels[2].posY, 2)
-            lblMissileSpeed['text'] = space.vessels[2].xSpeed
-            lblMissileDistance['text'] = round(space.vessels[2].targetDistance, 2)
-        time.sleep(0.1)
+        try:
+            lblShipX['text'] = round(space.vessels[0].pos[0], 2)
+            lblShipY['text'] = round(space.vessels[0].pos[1], 2)
+            if len(space.vessels) > 2:
+                lblMissileX['text'] = round(space.vessels[2].pos[0], 2)
+                lblMissileY['text'] = round(space.vessels[2].pos[1], 2)
+                lblMissileSpeed['text'] = space.vessels[2].totalSpeed 
+                lblMissileDistance['text'] = round(space.vessels[2].targetDistance, 2)
+            time.sleep(0.1)
+        except:
+            print("I take exception to this!")
+    print("Stopping GUI-Update...")
 
 updateThread = threading.Thread(target = updateGUI)
    
