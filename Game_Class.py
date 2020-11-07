@@ -5,7 +5,7 @@ import time
 import numpy as np
 
 class Game:
-    vessels = []
+    vessels = {}
     polling = True
     pollingInterval = 0.1
     nextID = 0
@@ -31,32 +31,36 @@ class Game:
     def spawnVessel(self, pos, name = ""):
         if name == "":
             name = "Ship No.", self.nextID
-        self.vessels.append(vc.Vessel(id = self.nextID, pos = pos, name = name))
+
+        self.vessels[self.nextID] = vc.Vessel(id = self.nextID, pos = pos, name = name)
+        print(self.vessels)
         self.nextID += 1
+
 
 
     def spawnProjectile(self, target, origin, speed, pos = None):
-        self.vessels.append(pc.Projectile(id = self.nextID, pos = pos, target = target, origin = origin, totalSpeed = speed))
+        self.vessels[self.nextID] = pc.Projectile(id = self.nextID, pos = pos, target = target, origin = origin, totalSpeed = speed)
         self.nextID += 1
 
+    def deleteVessel (self, id):
+        self.vessels.pop(id)
 
    
     def mainLoop (self):
-        told = time.time()
+        t = time.time()
+        
         while self.polling:
             
-            tcurr = time.time()     # calculate dT
-            dT = tcurr - told
-            
-            if dT > self.pollingInterval:
-            
-                for v in self.vessels:
-                    #v.xSpeed = v.xSpeed * dT
-                    if v.isAlive:
-                        v.update(dT)
-                #print("Polling...")
+            t += self.pollingInterval
 
-                told = tcurr
-        print("Shutting down...")
+            for ID in self.vessels:
+                v = self.vessels.get(ID)
+                if v.isAlive:
+                    v.update(self.pollingInterval)
+            #print("Polling...")
+
+            time.sleep(max(0, t-time.time()))
+
+        print("Shutting down mainLoop...")
 
     

@@ -6,11 +6,14 @@ import numpy as np
 # An unguided projectile
 class Projectile (Vessel_Class.Vessel):
     aimPoint = None
+    originPoint = None
     targetVessel = None     # make sure this is a Vessel-object!
     originVessel = None     # make sure this is a Vessel-object!
     targetDistance = -1
     terminalRange = 1.0     # At what distance do we calculate a hit?
     totalSpeed = 0.0
+    lifeTime = 0.0
+    distanceTravelled = 0.0
     
     terminalPhase = False
 
@@ -23,8 +26,11 @@ class Projectile (Vessel_Class.Vessel):
         self.originVessel = origin
         self.totalSpeed = totalSpeed
         
+        
+        
         if not pos :
             self.pos = self.originVessel.pos
+            self.originPoint = self.pos 
         
 
         self.takeAim()
@@ -49,11 +55,20 @@ class Projectile (Vessel_Class.Vessel):
     def update(self, dT):
         super().update(dT)      
         self.updateTargetDistance()
+        self.updateDistanceTravelled()
+
+        if self.isAlive:
+            self.lifeTime = self.lifeTime + dT
+            #print("Lifetime: ", + self.lifeTime)
         if not self.terminalPhase:
             self.updateVelocityVector ()
             self.detectHit()
-        
 
+    # Since we are moving along a straight line is is very simple!
+    def updateDistanceTravelled (self):
+        self.distanceTravelled = np.dot(self.pos -self.originPoint, self.pos -self.originPoint)
+
+    # We have reached the terminal phase  - let's see if we hit anything!
     def detectHit(self):
         if self.targetDistance < self.terminalRange:
             self.terminalPhase = True
@@ -67,7 +82,8 @@ class Projectile (Vessel_Class.Vessel):
             
 
     def detectDestinationReached(self): # What happens if we reach the destination but the target is not there anymore...
-        pass
+        if self.aimPoint - self.pos < self.terminalRange/10 :
+            self.terminalPhase = True
 
     # this function can only be called when the missile is launched!
     def takeAim (self):

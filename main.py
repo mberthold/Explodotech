@@ -18,10 +18,11 @@ def Initialize():
     print ("Initializing... \n\r")
     global space
     global updateThread
-    space.spawnVessel(np.array([5.0 , 0.0]), "Rocinante")
+    space.spawnVessel(np.array([5.0 , 5.0]), "Rocinante")
     print ("Ship spawned... \n\r")
     space.spawnVessel(np.array([0.0 , 0.0]),  "Borg Cube")
-    space.vessels[0].velocity[0] = 0.5
+    space.vessels[0].velocity[0] = -0.5
+    space.vessels[0].velocity[1] = -0.5
     print ("Missile spawned... \n\r")
     space.t1.start()
     print ("Space loop started... \n\r")
@@ -55,6 +56,7 @@ def updateGUI():
                 lblMissileY['text'] = round(space.vessels[2].pos[1], 2)
                 lblMissileSpeed['text'] = space.vessels[2].totalSpeed 
                 lblMissileDistance['text'] = round(space.vessels[2].targetDistance, 2)
+                lblMissileTime['text'] = round(space.vessels[2].lifeTime, 2)
             time.sleep(0.1)
         except:
             print("I take exception to this!")
