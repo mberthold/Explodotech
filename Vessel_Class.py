@@ -11,14 +11,14 @@ class Vessel:
     pos = np.array([0.0, 0.0])
     
     velocity = np.array([0.0, 0.0])
-   
+    size = 1.0
     
     isAlive = True
 
 
 
-    def __init__ (self, id, pos, name):
-        self.ID = id
+    def __init__ (self, ident, pos, name):
+        self.ID = ident
         self.name = name
         self.pos = pos
         

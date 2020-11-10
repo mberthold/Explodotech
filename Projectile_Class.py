@@ -12,16 +12,18 @@ class Projectile (Vessel_Class.Vessel):
     targetDistance = -1
     terminalRange = 1.0     # At what distance do we calculate a hit?
     totalSpeed = 0.0
-    lifeTime = 0.0
-    distanceTravelled = 0.0
+    
     
     terminalPhase = False
 
     # PoH and its modifiers
-    POH = 0.5               # Probability of hit
+    POH = 0.95               # Base PoH - basically this is the chance we will hit a "normal"-sized target at point-blank range
+    lifeTime = 0.0
+    distanceTravelled = 0.0
+    minPoH = 0.1
 
-    def __init__ (self, id, target, origin, totalSpeed, pos = None, name = None):
-        self.ID = id
+    def __init__ (self, ident, target, origin, totalSpeed, pos = None, name = None):
+        self.ID = ident
         self.targetVessel = target
         self.originVessel = origin
         self.totalSpeed = totalSpeed
@@ -44,7 +46,7 @@ class Projectile (Vessel_Class.Vessel):
     # There is a problem with this... once we reached our destination the projectile will oszilate around the destination point! We want it to keep flying!
     def updateVelocityVector (self):
         # Get the direction
-        vel = self.targetVessel.pos - self.pos
+        vel = self.aimPoint - self.pos
         # Get the length of the direction vector
         lenght = math.sqrt(np.dot(self.targetVessel.pos - self.pos, self.targetVessel.pos - self.pos))
         # Divide by lenght of direction vector (set length to one)
@@ -61,8 +63,10 @@ class Projectile (Vessel_Class.Vessel):
             self.lifeTime = self.lifeTime + dT
             #print("Lifetime: ", + self.lifeTime)
         if not self.terminalPhase:
-            self.updateVelocityVector ()
+            #self.updateVelocityVector ()
             self.detectHit()
+        if self.lifeTime > 30.0:
+            self.isAlive = False
 
     # Since we are moving along a straight line is is very simple!
     def updateDistanceTravelled (self):
@@ -70,8 +74,17 @@ class Projectile (Vessel_Class.Vessel):
 
     # We have reached the terminal phase  - let's see if we hit anything!
     def detectHit(self):
+        
+
         if self.targetDistance < self.terminalRange:
             self.terminalPhase = True
+            finalPoH = self.POH * self.targetVessel.size
+            lifeTimeMod = (1/(self.lifeTime/10+1)) + self.minPoH
+            finalPoH *= lifeTimeMod
+            print("Lifetime: ", self.lifeTime)
+            print("Lifetime modifier: ", lifeTimeMod)
+            print("Final PoH is: ", finalPoH)
+
             if random.random() < self.POH:
                 print ("Target has been hit!")
                 self.isAlive = False
@@ -84,6 +97,7 @@ class Projectile (Vessel_Class.Vessel):
     def detectDestinationReached(self): # What happens if we reach the destination but the target is not there anymore...
         if self.aimPoint - self.pos < self.terminalRange/10 :
             self.terminalPhase = True
+            print("Aimpoint reached!")
 
     # this function can only be called when the missile is launched!
     def takeAim (self):

@@ -8,8 +8,9 @@ import numpy as np
 
 # Import my own stuff
 import Vessel_Class
-import Game_Class
+import game_class
 
+"""
 space = Game_Class.Game()
 running = True
 
@@ -133,3 +134,7 @@ root.mainloop()
 #clear = lambda: os.system('cls')
 
 #clear()
+"""
+
+g = game_class.Game()
+g.gui_loop()
