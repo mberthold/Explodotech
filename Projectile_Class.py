@@ -45,14 +45,15 @@ class Projectile (Vessel_Class.Vessel):
 
     # There is a problem with this... once we reached our destination the projectile will oszilate around the destination point! We want it to keep flying!
     def updateVelocityVector (self):
+        pass
         # Get the direction
-        vel = self.aimPoint - self.pos
+        #vel = self.aimPoint - self.pos
         # Get the length of the direction vector
-        lenght = math.sqrt(np.dot(self.targetVessel.pos - self.pos, self.targetVessel.pos - self.pos))
+        #lenght = math.sqrt(np.dot(self.targetVessel.pos - self.pos, self.targetVessel.pos - self.pos))
         # Divide by lenght of direction vector (set length to one)
-        vel = vel/lenght
+        #vel = vel/lenght
         # Multiply by the totalSpeed
-        self.velocity = vel * self.totalSpeed
+        #self.velocity = vel * self.totalSpeed
 
     def update(self, dT):
         super().update(dT)      
@@ -101,32 +102,51 @@ class Projectile (Vessel_Class.Vessel):
 
     # this function can only be called when the missile is launched!
     def takeAim (self):
-        if math.sqrt(np.dot(self.targetVessel.velocity, self.targetVessel.velocity)) == 0.0: # if our traget is not moving
-            self.aimPoint = self.targetVessel.pos
+        t = 0
+
+        #self.totalSpeed += math.sqrt(np.dot(self.originVessel.velocity, self.originVessel.velocity))
+
+        posRel = self.pos - self.targetVessel.pos 
+        velRel = self.originVessel.velocity - self.targetVessel.velocity
+        #velRel =  - self.targetVessel.velocity
+
+        a = (np.dot(velRel, velRel))-(self.totalSpeed**2)
+        b = 2.0 * (np.dot(velRel,posRel))
+        c = np.dot(posRel, posRel)
+
+        disc = (b*b) - (4.0*a*c)
+
+        print("Disc: ", disc)
+
+        if disc < 0:
+            print("Target is too fast - no point shooting!")
         else:
-            toTarget = self.targetVessel.pos - self.pos
-            targetVelocity = self.targetVessel.velocity
+            t0 = (-b - math.sqrt(disc)) / (2.0*a)
+            t1 = (-b + math.sqrt(disc)) / (2.0*a)
 
-            a = np.dot(targetVelocity, targetVelocity) - self.totalSpeed**2
-            b = 2 * np.dot(targetVelocity, toTarget)
-            c = np.dot(toTarget, toTarget)
+            print("t0: ", t0)
+            print("t1: ", t1)
 
-            p = -b / (2*a)
-            q = math.sqrt((b * b) - 4 * a * c) / (2 * a)
-
-            t1 = p - q
-            t2 = p + q
-            t = None
-
-            if t1 > t2 and t2 > 0:
-
-                t = t2
-
-            else:
-
+            if t0 < 0:
                 t = t1
+                print ("Choosing t1")
+            elif t1 < 0:
+                t = t0
+                print ("Choosing t0")
+            else:
+                if t0 < t1:
+                    t = t0
+                    print("Choosing t0")
+                else: 
+                    t = t1
+                    print("Choosing t1")
 
-            self.aimPoint = self.targetVessel.pos + self.targetVessel.velocity * t
-            
-         
-            
+        shoot = velRel + (posRel / t)
+        self.velocity =  shoot + self.targetVessel.velocity
+        self.aimPoint = self.targetVessel.pos + self.targetVessel.velocity*t
+        targetDirection = self.aimPoint-self.pos
+        targetDistance = math.sqrt(np.dot(targetDirection, targetDirection))
+        targetDirection = targetDirection / targetDistance #normalize the direction vector
+        self.totalSpeed = targetDistance/t
+        self.velocity = (targetDirection * self.totalSpeed)
+        print(self.totalSpeed)

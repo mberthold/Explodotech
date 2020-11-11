@@ -28,6 +28,8 @@ class Game ():
 
         pygame.init()
         pygame.display.set_caption('Explodotech')
+        pygame.font.init()
+        self.myfont = pygame.font.SysFont('Courier', 20)
         self.window_surface = pygame.display.set_mode((self.window_height, self.window_width))
         self.background = pygame.Surface((self.window_height, self.window_width))
         self.background.fill(pygame.Color('#000000'))
@@ -92,11 +94,21 @@ class Game ():
             self.window_surface.blit(self.background, (0, 0))
 
             # Draw all the elements onto the screen
+            graveyard = []
             for ID in self.objects:
                 #print("Drawing object")
                 obj = self.objects.get(ID)
                 pygame.draw.circle(surface = self.window_surface, color = "white", center = obj.pos, radius = 10, width = 2)
+                textsurface = self.myfont.render(self.objects[ID].name, False, (100, 100, 100))
+                self.window_surface.blit(textsurface,(self.objects[ID].pos[0]+15,self.objects[ID].pos[1]-10))
+                if ID == 2:
+                    pygame.draw.circle(surface = self.window_surface, color = "red", center = self.objects[ID].aimPoint, radius = 5, width = 2)
+                if not obj.isAlive:
+                    graveyard.append(ID)
 
+            for ID in graveyard:
+                self.objects.pop(ID)
+            
             self.manager.draw_ui(self.window_surface)
 
             pygame.display.update()
@@ -128,8 +140,10 @@ class Game ():
         """Spawn two vessels to see if thinsg work"""
         print("Run Test pressed!")
         self.objects[self.next_id] = vc.Vessel(ident = self.next_id, pos = np.array([500.0,500.0]), name =  "Rocinante")
-        self.objects[self.next_id].velocity = np.array([0.0,0.0])
+        self.objects[self.next_id].velocity = np.array([10.0,0.0])
         self.next_id += 1
-        self.objects[self.next_id] = vc.Vessel(ident = self.next_id, pos = np.array([200.0,300.0]), name =  "Hamurabi")
+        self.objects[self.next_id] = vc.Vessel(ident = self.next_id, pos = np.array([10.0,500.0]), name =  "Hamurabi")
+        self.objects[self.next_id].velocity = np.array([10.0,0.0])
         self.next_id += 1
         self.objects[self.next_id] = pc.Projectile(ident = self.next_id, target = self.objects[0], origin = self.objects[1], totalSpeed = 20.0)
+        

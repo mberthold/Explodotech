@@ -5,7 +5,7 @@ import numpy as np
 
 
 class Vessel:
-    # A very simple missile - maybe even the prototype for all missiles.. who knows..
+   
     ID = "None"
     name = "New Ship"
     pos = np.array([0.0, 0.0])
