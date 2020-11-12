@@ -33,6 +33,7 @@ class Game ():
         self.window_surface = pygame.display.set_mode((self.window_height, self.window_width))
         self.background = pygame.Surface((self.window_height, self.window_width))
         self.background.fill(pygame.Color('#000000'))
+        self.scenario_list = ["Pinky", "TheBrain"]
 
         self.manager = pygame_gui.UIManager((self.window_height, self.window_width))
 
@@ -46,7 +47,12 @@ class Game ():
         self.start_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((50,50),(100,50)),
                                                         text='Start', manager = self.manager)
 
-        self.btn_run_test = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((50,150),(100,50)),
+        # Scenatio selection
+        self.drp_scenario_select = pygame_gui.elements.ui_drop_down_menu.UIDropDownMenu(relative_rect = pygame.Rect((50,300),(300,50)), manager = self.manager, 
+                                                                                    options_list = self.scenario_list, starting_option = "Choose scenario")
+
+        # We will keep this one around for now but actuall we want to select a scenario and spawn the vessels from there
+        self.btn_run_test = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((50,700),(100,50)),
                                                         text='Run Test', manager = self.manager)
 
         ### Create the engine thread
@@ -62,6 +68,10 @@ class Game ():
     def stop_polling(self):
         """Stops the main loop"""
         self.engine_running = False
+
+    def load_scenarios(self):
+        """ Load different scenario options from a (json?) file"""
+        pass
 
     def gui_loop(self):
         """Managing all the GUI stuff"""
@@ -104,8 +114,12 @@ class Game ():
                     pygame.draw.line(surface = self.window_surface, color = color, start_pos = obj.pos, end_pos = obj.pos + 2*obj.velocity, width = 2)
                     textsurface = self.myfont.render(self.objects[ID].name, False, (100, 100, 100))
                     self.window_surface.blit(textsurface,(self.objects[ID].pos[0]+15,self.objects[ID].pos[1]-10))
-                if ID == 2:
-                    pygame.draw.circle(surface = self.window_surface, color = "red", center = self.objects[ID].aimPoint, radius = 5, width = 2)
+                elif obj.vessel_type == "missile":
+                    color = "red"
+                    
+                    pygame.draw.rect(surface = self.window_surface, color = color, rect = pygame.Rect((obj.pos-(5,5)),(10,10)), width = 2)
+                    pygame.draw.line(surface = self.window_surface, color = color, start_pos = obj.pos, end_pos = obj.pos + 2*obj.velocity, width = 2)
+
                 if not obj.isAlive:
                     graveyard.append(ID)
 

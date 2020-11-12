@@ -28,7 +28,7 @@ class Projectile (Vessel_Class.Vessel):
         self.originVessel = origin
         self.totalSpeed = totalSpeed
         self.name = "Projectile No. " + str(self.ID)
-        self.vesselType = "missile"
+        self.vessel_type = "missile"
         self.faction = self.originVessel.faction
         
         

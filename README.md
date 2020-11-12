@@ -15,3 +15,4 @@ There is a lot still to do. Anyone is welcome to download the code and give it a
 * Come up with a format for saving scenarios
 * Create simple guided missile
 * Sensors?
+* Make the map scalable
