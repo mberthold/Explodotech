@@ -96,11 +96,14 @@ class Game ():
             # Draw all the elements onto the screen
             graveyard = []
             for ID in self.objects:
-                #print("Drawing object")
                 obj = self.objects.get(ID)
-                pygame.draw.circle(surface = self.window_surface, color = "white", center = obj.pos, radius = 10, width = 2)
-                textsurface = self.myfont.render(self.objects[ID].name, False, (100, 100, 100))
-                self.window_surface.blit(textsurface,(self.objects[ID].pos[0]+15,self.objects[ID].pos[1]-10))
+                # Drawing ships
+                if "ship" in obj.vessel_type:
+                    color = "white"
+                    pygame.draw.circle(surface = self.window_surface, color = color, center = obj.pos, radius = 10, width = 2)
+                    pygame.draw.line(surface = self.window_surface, color = color, start_pos = obj.pos, end_pos = obj.pos + 2*obj.velocity, width = 2)
+                    textsurface = self.myfont.render(self.objects[ID].name, False, (100, 100, 100))
+                    self.window_surface.blit(textsurface,(self.objects[ID].pos[0]+15,self.objects[ID].pos[1]-10))
                 if ID == 2:
                     pygame.draw.circle(surface = self.window_surface, color = "red", center = self.objects[ID].aimPoint, radius = 5, width = 2)
                 if not obj.isAlive:
@@ -137,7 +140,7 @@ class Game ():
         self.engine_thread.start()
 
     def btn_run_test_event(self):
-        """Spawn two vessels to see if thinsg work"""
+        """Spawn two vessels to see if things work"""
         print("Run Test pressed!")
         self.objects[self.next_id] = vc.Vessel(ident = self.next_id, pos = np.array([500.0,500.0]), name =  "Rocinante")
         self.objects[self.next_id].velocity = np.array([10.0,0.0])

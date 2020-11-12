@@ -5,13 +5,18 @@ import numpy as np
 
 
 class Vessel:
-   
+    """Generic Vessel-class"""
     ID = "None"
     name = "New Ship"
-    pos = np.array([0.0, 0.0])
+    faction = "None"
+    vessel_type = "None"
     
+    pos = np.array([0.0, 0.0])
+
     velocity = np.array([0.0, 0.0])
+    
     size = 1.0
+    visibility = 1.0
     
     isAlive = True
 
@@ -21,6 +26,7 @@ class Vessel:
         self.ID = ident
         self.name = name
         self.pos = pos
+        self.vessel_type = "generic_ship"
         
 
     def getPosition (self):

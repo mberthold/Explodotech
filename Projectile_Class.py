@@ -27,6 +27,9 @@ class Projectile (Vessel_Class.Vessel):
         self.targetVessel = target
         self.originVessel = origin
         self.totalSpeed = totalSpeed
+        self.name = "Projectile No. " + str(self.ID)
+        self.vesselType = "missile"
+        self.faction = self.originVessel.faction
         
         
         
@@ -91,6 +94,8 @@ class Projectile (Vessel_Class.Vessel):
                 self.isAlive = False
                 self.velocity = self.velocity * 0
                 self.totalSpeed = 0.0
+                # For the time being everything will just die on a single hit - damage model should come later!
+                self.targetVessel.isAlive = False
             else:
                 print ("Target has been missed!")
             
