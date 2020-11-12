@@ -8,7 +8,7 @@ import numpy as np
 
 # Import my own stuff
 import Vessel_Class
-import game_class
+import Game_Class
 
 """
 space = Game_Class.Game()
@@ -136,5 +136,5 @@ root.mainloop()
 #clear()
 """
 
-g = game_class.Game()
+g = Game_Class.Game()
 g.gui_loop()
