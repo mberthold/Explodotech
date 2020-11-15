@@ -13,7 +13,7 @@ class Game:
 
     def __init__(self, active = False):
         self.t1 = threading.Thread(target = self.mainLoop, args = [])
-        
+        print ("Armageddon")
 
     def startPolling (self):
         self.polling = True

@@ -68,7 +68,7 @@ class Projectile (Vessel_Class.Vessel):
             #print("Lifetime: ", + self.lifeTime)
         if not self.terminalPhase:
             #self.updateVelocityVector ()
-            self.detectHit()
+            self.detectHit(dT)
         if self.lifeTime > 30.0:
             self.isAlive = False
 
@@ -77,10 +77,13 @@ class Projectile (Vessel_Class.Vessel):
         self.distanceTravelled = np.dot(self.pos -self.originPoint, self.pos -self.originPoint)
 
     # We have reached the terminal phase  - let's see if we hit anything!
-    def detectHit(self):
+    def detectHit(self, dT):
         
+        # Let's see if we are actually getting closer to the target - how close will we be at the next tick?
+        d_distance = (self.targetVessel.pos + self.targetVessel.velocity*dT) - (self.pos + self.velocity*dT)
+        d_distance = math.sqrt(np.dot(d_distance, d_distance))
 
-        if self.targetDistance < self.terminalRange:
+        if (self.targetDistance < self.terminalRange) and (d_distance < self.targetDistance):
             self.terminalPhase = True
             finalPoH = self.POH * self.targetVessel.size
             lifeTimeMod = (1/(self.lifeTime/10+1)) + self.minPoH

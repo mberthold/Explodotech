@@ -18,11 +18,13 @@ class Game ():
     gui_framerate = 60.0
     engine_framerate = 120.0
 
-    window_height = 1200
-    window_width = 800
+    window_height = 800
+    window_width = 1200
 
     objects = {}
     next_id = 0
+
+    background = None
 
     def __init__(self):
 
@@ -30,17 +32,25 @@ class Game ():
         pygame.display.set_caption('Explodotech')
         pygame.font.init()
         self.myfont = pygame.font.SysFont('Courier', 20)
-        self.window_surface = pygame.display.set_mode((self.window_height, self.window_width))
-        self.background = pygame.Surface((self.window_height, self.window_width))
-        self.background.fill(pygame.Color('#000000'))
+        self.window_surface = pygame.display.set_mode((self.window_width,self.window_height))
+
+        try:
+            self.background = pygame.image.load("Ressources/menu_bg.jpg")
+            print("Setting Background image")
+        except OSError as e:
+            print (str(e))
+            self.background = pygame.Surface((self.window_width,self.window_height))
+            self.background.fill(pygame.Color('#000000'))
+            print("Setting Background black")
+
         self.scenario_list = ["Pinky", "TheBrain"]
 
-        self.manager = pygame_gui.UIManager((self.window_height, self.window_width))
+        self.manager = pygame_gui.UIManager((self.window_width, self.window_height))
 
         ### Define GUI Elements here
-        self.lbl_title = pygame_gui.elements.UILabel(relative_rect=pygame.Rect((self.window_width/2, 20), (200,50)), text = "Explodotech", manager = self.manager)
+        self.lbl_title = pygame_gui.elements.UILabel(relative_rect=pygame.Rect((self.window_width/2 - 100, 20), (200,50)), text = "Explodotech", manager = self.manager)
 
-        self.quit_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((self.window_height-150, self.window_width-100),
+        self.quit_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((self.window_width-150, self.window_height-100),
                             (100, 50)), text='Quit', manager=self.manager,
                             tool_tip_text = "Quit the game")
 
@@ -104,7 +114,7 @@ class Game ():
             self.window_surface.blit(self.background, (0, 0))
 
             # Draw all the elements onto the screen
-            graveyard = []
+
             for ID in self.objects:
                 obj = self.objects.get(ID)
                 # Drawing ships
@@ -120,12 +130,6 @@ class Game ():
                     pygame.draw.rect(surface = self.window_surface, color = color, rect = pygame.Rect((obj.pos-(5,5)),(10,10)), width = 2)
                     pygame.draw.line(surface = self.window_surface, color = color, start_pos = obj.pos, end_pos = obj.pos + 2*obj.velocity, width = 2)
 
-                if not obj.isAlive:
-                    graveyard.append(ID)
-
-            for ID in graveyard:
-                self.objects.pop(ID)
-            
             self.manager.draw_ui(self.window_surface)
 
             pygame.display.update()
@@ -135,9 +139,14 @@ class Game ():
         print("Engine loop started...")
         while self.engine_running:
             t = self.clock.tick_busy_loop(60)/1000
+            graveyard = []
             for ID in self.objects:
                 obj = self.objects.get(ID)
                 obj.update(t)
+                if not obj.isAlive:
+                    graveyard.append(ID)
+            for ID in graveyard:
+                self.objects.pop(ID)
 
     ### Define GUI events here
 
@@ -159,8 +168,8 @@ class Game ():
         self.objects[self.next_id] = vc.Vessel(ident = self.next_id, pos = np.array([500.0,500.0]), name =  "Rocinante")
         self.objects[self.next_id].velocity = np.array([10.0,0.0])
         self.next_id += 1
-        self.objects[self.next_id] = vc.Vessel(ident = self.next_id, pos = np.array([10.0,500.0]), name =  "Hamurabi")
-        self.objects[self.next_id].velocity = np.array([10.0,0.0])
+        self.objects[self.next_id] = vc.Vessel(ident = self.next_id, pos = np.array([300.0,300.0]), name =  "Hamurabi")
+        self.objects[self.next_id].velocity = np.array([10.0,10.0])
         self.next_id += 1
         self.objects[self.next_id] = pc.Projectile(ident = self.next_id, target = self.objects[0], origin = self.objects[1], totalSpeed = 20.0)
         
