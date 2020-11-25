@@ -20,8 +20,7 @@ class Vessel:
     
     isAlive = True
 
-
-
+    
     def __init__ (self, ident, pos, name):
         self.ID = ident
         self.name = name
