@@ -12,6 +12,9 @@ There is a lot still to do. Anyone is welcome to download the code and give it a
 
 ## Ideas - i.e. the Roadmap
 * Make the player's ship controllable
+    * Create Buttons on the radarscope
+    * Make it so that ships don't endlessely accelerate 
+        * Either have a speedlimit or make the whole thing relative to the player
 * Come up with a format for saving scenarios
 * Create simple guided missile
 * Sensors?
