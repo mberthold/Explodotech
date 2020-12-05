@@ -5,11 +5,11 @@ import Vessel_Class
 class Ship(Vessel_Class.Vessel):
     """Basic steerable ship"""
     rotation_speed = 0.0                        # degrees per second
-    max_rotation_speed = 0.0                    # degrees per second
+    max_rotation_speed = 30.0                   # degrees per second
     orientation_vector = np.array([1.0, 0.0])
     heading = 0.0                              # degrees!
 
-    max_acceleration = 0.0
+    max_acceleration = 5.0
     curr_acceleration = 0.0
     vessel_type = "ship"
 

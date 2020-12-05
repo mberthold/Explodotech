@@ -8,6 +8,7 @@ import json
 import Vessel_Class as vc
 import Projectile_Class as pc
 import Ship_Class as sc
+from Radar_Screen import Radar_Screen
 
 
 class Game ():
@@ -41,9 +42,12 @@ class Game ():
         self.myfont = pygame.font.SysFont('Courier', 20)
         self.window_surface = pygame.display.set_mode((self.window_width,self.window_height))
         self.manager = pygame_gui.UIManager((self.window_width, self.window_height))
-        self.initiate_radar_screen()
+        self.initiate_main_screen()
+        #self.initiate_radar_screen()
+        self.radar_screen = Radar_Screen(position = self.radar_scope_position, manager = self.manager, font = self.myfont)
         
-
+    def initiate_main_screen(self):
+        
         try:
             self.background = pygame.image.load("Ressources/menu_bg.jpg")
             print("Setting Background image")
@@ -54,9 +58,7 @@ class Game ():
             print("Setting Background black")
         self.gui_layers.append((self.background, (0,0)))
 
-        #self.manager = pygame_gui.UIManager((self.window_width, self.window_height))
-
-        ### Define GUI Elements here
+         ### Define GUI Elements here
         self.lbl_title = pygame_gui.elements.UILabel(relative_rect=pygame.Rect((self.window_width/2 - 100, 20), (200,50)), text = "Explodotech", manager = self.manager)
 
         self.quit_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((self.window_width-150, self.window_height-100),
@@ -78,14 +80,6 @@ class Game ():
         self.engine_thread = threading.Thread(target = self.engine_loop, args = [], daemon=True)
 
         #self.engine_thread.start()
-
-    def initiate_radar_screen(self):
-        """Initiate all the elements found on the radar screen"""
-        scope_size = (600, 600)
-        self.radar_manager = pygame_gui.UIManager(scope_size)
-        self.radar_scope = pygame.Surface(scope_size)   # This is the surface we want to be drawing all of the tokens on
-        self.btn_accelerate = pygame_gui.elements.UIButton(relative_rect = pygame.Rect((scope_size[0]-150, 200),(50,50)), text="Burn",
-                                                            manager = self.radar_manager)
 
 
     def start_polling(self):
@@ -129,6 +123,15 @@ class Game ():
                             self.start_button_event()
                         if event.ui_element == self.btn_run_test:
                             self.btn_run_test_event()
+                        if event.ui_element == self.radar_screen.btn_accelerate:
+                            self.btn_accelerate_event()
+                            print("Something happened")
+                        """
+                        if event.ui_element == self.btn_rotate_left:
+                            self.btn_rotate_left_event()
+                        if event.ui_element == self.btn_rotate_right:
+                            self.btn_rotate_right_event()
+                        """
                     # Checking for dropdown changes!
                     if event.user_type == pygame_gui.UI_DROP_DOWN_MENU_CHANGED:
                         if event.ui_element == self.drp_scenario_select:
@@ -147,6 +150,8 @@ class Game ():
                                             self.next_id += 1
 
                 self.manager.process_events(event)
+                
+                
 
             self.manager.update(dT)
             
@@ -155,44 +160,12 @@ class Game ():
             self.manager.draw_ui(self.window_surface)
             
             if self.engine_running:
-                self.draw_radar_scope(dT)
+                self.radar_screen.draw(dT = dT, objects = self.objects)
+                #self.manager.process_events(event)
 
             pygame.display.update()
 
-    def draw_radar_scope(self, dT):
-
-        # Blank the Radar Scope
-
-        self.radar_scope.fill(pygame.Color('#1E323C'))
-
-
-        # Draw all the elements onto the screen
-
-        for ID in self.objects:
-            obj = self.objects.get(ID)
-            # Drawing ships
-            if "ship" in obj.vessel_type:
-                color = "white"
-
-                center = (obj.pos)/self.radar_scope_zoom
-                line_end = (center + 2*obj.velocity)
-                text_pos = ((center[0]+15), (center[1]-10))
-
-                pygame.draw.circle(surface = self.radar_scope, color = color, center = center, radius = 10, width = 2)
-                pygame.draw.line(surface = self.radar_scope, color = color, start_pos = center, end_pos = line_end, width = 2)
-                textsurface = self.myfont.render(self.objects[ID].name, False, (100, 100, 100))
-                self.radar_scope.blit(textsurface, text_pos)
-            elif obj.vessel_type == "missile":
-                color = "red"
-                rel = (obj.pos-[5,5])/self.radar_scope_zoom
-                center = center = (obj.pos)/self.radar_scope_zoom
-                line_end = (center + 2*obj.velocity)
-                size = (10/self.radar_scope_zoom, 10/self.radar_scope_zoom)
-                pygame.draw.rect(surface = self.radar_scope, color = color, rect = pygame.Rect((rel,size), width = 2))
-                pygame.draw.line(surface = self.radar_scope, color = color, start_pos = center, end_pos = line_end, width = 2)
-
-        self.radar_manager.update(dT)
-        self.radar_manager.draw_ui(self.radar_scope)
+        
 
     def engine_loop(self):
         """Doing all the game calculations in the background"""
@@ -222,7 +195,8 @@ class Game ():
             print("Engine Starting")
             self.engine_running = True
             self.engine_thread.start()
-            self.gui_layers.append((self.radar_scope, self.radar_scope_position))
+            self.gui_layers.append((self.radar_screen.get_surface(), self.radar_scope_position))
+            self.radar_screen.show_controls()
         else:
             print("Engine Stopping")
             self.engine_running = False
@@ -237,4 +211,15 @@ class Game ():
         """Spawn two vessels to see if things work"""
         print("Run Test pressed!")
 
-        
+    def btn_accelerate_event(self):
+        """Burn Player vessels's engine"""
+        print("Burning Engine")
+
+    def btn_rotate_left_event(self):
+        """Rotate player vessel left"""
+        print("Rotating left")
+
+    def btn_rotate_right_event(self):
+        """ Rotate player vessel right"""
+        print("Rotating (just) right")
+            
