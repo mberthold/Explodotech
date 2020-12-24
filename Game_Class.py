@@ -139,7 +139,7 @@ class Game ():
                                 if scen["name"] == event.text:
                                     for obj in scen["objects"]:
                                         if "ship" in obj["type"]:
-                                            self.objects[self.next_id] = sc.Ship(ident = self.next_id, pos = np.array(obj["pos"]), name =  obj["name"])
+                                            self.objects[self.next_id] = sc.Ship(ident = self.next_id, pos = np.array(obj["pos"]), name =  obj["name"], faction = obj["faction"])
                                             self.objects[self.next_id].velocity = np.array(obj["velocity"])
                                             self.next_id += 1
                                         if "missile" in obj["type"]:
@@ -181,6 +181,12 @@ class Game ():
             for ID in graveyard:
                 self.objects.pop(ID)
 
+    def get_player_vessel_id(self):
+        for ID in self.objects:
+            obj = self.objects.get(ID)
+            if obj.faction == "player":
+                return ID
+
     ### Define GUI events here
 
     def quit_button_event(self):
@@ -208,8 +214,11 @@ class Game ():
             #self.engine_thread.stop()
 
     def btn_run_test_event(self):
-        """Spawn two vessels to see if things work"""
+        """Do some testing"""
         print("Run Test pressed!")
+        ID = self.get_player_vessel_id()
+        self.objects.get(ID).set_heading(90)
+
 
     def btn_accelerate_event(self):
         """Burn Player vessels's engine"""

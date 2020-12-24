@@ -21,11 +21,12 @@ class Vessel:
     isAlive = True
 
     
-    def __init__ (self, ident, pos, name):
+    def __init__ (self, ident, pos, name, faction = "None"):
         self.ID = ident
         self.name = name
         self.pos = pos
         self.vessel_type = "generic_ship"
+        self.faction = faction
         
 
     def getPosition (self):

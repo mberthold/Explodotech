@@ -56,6 +56,8 @@ class Radar_Screen:
             # Drawing ships
             if "ship" in obj.vessel_type:
                 color = "white"
+                if obj.faction == "player":
+                    color = "blue"
 
                 center = (obj.pos)/self.zoom_factor
                 line_end = (center + 2*obj.velocity)
@@ -65,6 +67,7 @@ class Radar_Screen:
                 pygame.draw.line(surface = self.radar_scope, color = color, start_pos = center, end_pos = line_end, width = 2)
                 textsurface = self.myfont.render(objects[ID].name, False, (100, 100, 100))
                 self.radar_scope.blit(textsurface, text_pos)
+                
             elif obj.vessel_type == "missile":
                 color = "red"
                 rel = (obj.pos-[5,5])/self.zoom_factor
