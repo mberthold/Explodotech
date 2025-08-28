@@ -24,6 +24,7 @@ public class Sensor : MonoBehaviour
 
     // Visualisation
     private Mesh mesh;  // Mesh for visualization
+    private MeshRenderer meshRenderer;
     public int rayCount = 30; // How closely do we want to be to an actual cone as opposed to a simple triangle? Number of subcones.
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -33,6 +34,8 @@ public class Sensor : MonoBehaviour
 
         mesh = new Mesh();
         GetComponent<MeshFilter>().mesh = mesh;
+        meshRenderer = GetComponent<MeshRenderer>();
+
         origin = Vector3.zero; // This works only as long as the sensor is attached to another object. All positions are relative to the parent!
 
         scanInterval = 1.0f / scanFrequency;
@@ -48,6 +51,11 @@ public class Sensor : MonoBehaviour
     {
         sensorPassive.UpdatePosition(this.transform.position);
         DrawCone();
+
+        if (meshRenderer != null)
+        {
+            meshRenderer.enabled = visualize;
+        }
 
         scanTimer -= Time.deltaTime;
         if (scanTimer < 0)
@@ -80,7 +88,7 @@ public class Sensor : MonoBehaviour
         (Vector3[] vertices, Vector2[] points) = SensorUtils.CalculateCone(this.origin, this.direction, this.fov, this.rayCount, this.sensorRange);
         Vector2[] uv = new Vector2[vertices.Length];
         int[] triangles = new int[rayCount * 3];
-
+        
         // ######################################################################
         // Define the triangles for the mesh!
         int vertexIndex = 1;
