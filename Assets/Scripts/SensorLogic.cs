@@ -60,6 +60,8 @@ namespace ExplodotechUtils
 
     public class SensorGeneric
     {
+        protected Vector3 position;
+
         // This List is populated in Sensor.cs using Unity specific methods! We do not care how it was populated!!
         public List<GameObject> ObjectsInCone = new List<GameObject>();
         public List<GameObject> DetectedObjects = new List<GameObject>();
@@ -105,30 +107,41 @@ namespace ExplodotechUtils
                 }
             }
         }
+
+        public void UpdatePosition(Vector3 position)
+        {
+            this.position = position;
+        }
     }
 
     public class SensorPassive : SensorGeneric
-    {
-        /*
-        * This is a passive Sensor. It does not send out a signal of its own.
-        * It only looks and receives signals. Real world example: Mk1 Eyeball!
-        * The sensor has a signal threshold above which it detects a signal. 
-        * If the signal is below the threshold the sensor does not detect anyting!
-        */
-
-        public float SignalThreshold = 1f;
-
-        protected override bool DetectObject(GameObject obj)
         {
+            /*
+            * This is a passive Sensor. It does not send out a signal of its own.
+            * It only looks and receives signals. Real world example: Mk1 Eyeball!
+            * The sensor has a signal threshold above which it detects a signal. 
+            * If the signal is below the threshold the sensor does not detect anyting!
+            */
 
-            Emitter emitter = obj.GetComponentInChildren<Emitter>();
+            public float SignalThreshold = 1f;
 
-            if (emitter == null) return false; // If there is no emitter we can stop this whole thing and return false!
-
-            float strength = emitter.signalStrength;
-            if (strength >= SignalThreshold)
+            protected override bool DetectObject(GameObject obj)
             {
-                //Debug.Log($"Object detected: {obj.name}");
+
+                Emitter emitter = obj.GetComponentInChildren<Emitter>();
+                float distance = Vector3.Distance(obj.transform.position, this.position);
+                Debug.Log("Distance: " + distance);
+
+                if (emitter == null) return false; // If there is no emitter we can stop this whole thing and return false!
+
+                // Emitter's strength (not adjusted!)
+                float strength = emitter.signalStrength;
+                // Received signal strength - adjusted for distance!
+                strength = emitter.signalStrength / (distance * distance);
+                Debug.Log("Received signal: " + strength);
+
+                if (strength >= SignalThreshold)
+            {
                 return true;
             }
             else
@@ -136,8 +149,8 @@ namespace ExplodotechUtils
                 return false;
             }
 
-        }
+            }
 
-    }
+        }
 
 }

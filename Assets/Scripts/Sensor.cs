@@ -16,7 +16,8 @@ public class Sensor : MonoBehaviour
     public int scanFrequency = 30;
     public float scanInterval;
     public float scanTimer;
-    private SensorPassive sensorPassive = new SensorPassive();
+    public bool visualize = true;
+    private SensorPassive sensorPassive;
     private List<GameObject> ObjectsInCone = new List<GameObject>(); // Objects in the cone
     public List<GameObject> DetectedObjects = new List<GameObject>(); // The Objects we can actually see!
     public List<GameObject> displayedObjects = new List<GameObject>();
@@ -28,6 +29,8 @@ public class Sensor : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        sensorPassive = new SensorPassive();
+
         mesh = new Mesh();
         GetComponent<MeshFilter>().mesh = mesh;
         origin = Vector3.zero; // This works only as long as the sensor is attached to another object. All positions are relative to the parent!
@@ -43,6 +46,7 @@ public class Sensor : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        sensorPassive.UpdatePosition(this.transform.position);
         DrawCone();
 
         scanTimer -= Time.deltaTime;
