@@ -38,11 +38,12 @@ namespace ExplodotechUtils
             return (result3, result2);
         }
 
-        public static void setObjectVisible(GameObject obj, bool visible)
+        public static void SetObjectVisible(GameObject obj, bool visible)
         {
-            // Get the current x and y positions.
-            float currentX = obj.transform.position.x;
-            float currentY = obj.transform.position.y;
+
+            /*
+            * For the time being visibility is just a question of setting the z-Position of an object.
+            */
 
             float newZ = 0f;
             // Create a new Vector3 with the updated z-position and the old x and y.
@@ -50,10 +51,9 @@ namespace ExplodotechUtils
             {
                 newZ = 1f;
             }
-            Vector3 newPosition = new Vector3(currentX, currentY, newZ);
 
-            // Assign the new position to the transform.
-            obj.transform.position = newPosition;
+            VectorUtils.TransformSetZ(obj, newZ);
+
         }
 
     }
@@ -111,7 +111,7 @@ namespace ExplodotechUtils
     {
         /*
         * This is a passive Sensor. It does not send out a signal of its own.
-        * It only looks and receives signals. Reals world example: Mk1 Eyeball!
+        * It only looks and receives signals. Real world example: Mk1 Eyeball!
         * The sensor has a signal threshold above which it detects a signal. 
         * If the signal is below the threshold the sensor does not detect anyting!
         */
