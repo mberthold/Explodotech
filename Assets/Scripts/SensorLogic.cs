@@ -98,7 +98,7 @@ namespace ExplodotechUtils
 
             Emitter emitter = obj.GetComponentInChildren<Emitter>();
             float distance = Vector3.Distance(obj.transform.position, this.position);
-            Debug.Log("Distance: " + distance);
+            //Debug.Log("Distance: " + distance);
             float totalOverlapScore = 0f;
 
             if (emitter == null) return false; // If there is no emitter we can stop this whole thing and return false!
@@ -119,8 +119,8 @@ namespace ExplodotechUtils
             // Emitter's strength (not adjusted!)
             float strength = emitter.signalStrength;
             // Received signal strength - adjusted for distance!
-            strength = emitter.signalStrength / (distance * distance);
-            Debug.Log("Received signal: " + strength);
+            totalOverlapScore = totalOverlapScore / (distance * distance);
+            Debug.Log("Received signal: " + totalOverlapScore);
 
             if (totalOverlapScore >= SignalThreshold)
             {

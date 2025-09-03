@@ -4,10 +4,16 @@ using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 using ExplodotechUtils;
+using System.Collections.Generic;
 
 public class TestSensor : SensorGeneric
 {
     public bool detected = true;
+
+    public TestSensor(SpectrumProfile profile) : base(profile)
+    {
+        // Any specific setup for the test class can go here.
+    }
     protected override bool DetectObject(GameObject obj)
     {
         return detected;
@@ -17,6 +23,28 @@ public class TestSensor : SensorGeneric
 
 public class SensorTest
 {
+    public SpectrumProfile GenerateTestProfile()
+    {
+        // Create a new SpectrumProfile instance
+        SpectrumProfile testProfile = new SpectrumProfile();
+        
+        // Initialize its list
+        testProfile.spectrum = new List<BandData>();
+
+        // Create a new SpectrumData entry with a single value
+        BandData singleEntry = new BandData
+        {
+            emissionType = "RadioWaves",
+            strength = 1.0f
+        };
+
+        // Add the single entry to the list
+        testProfile.spectrum.Add(singleEntry);
+
+        return testProfile;
+    }
+
+
     [Test]
     public void TestNumberOfPointsGenerated()
     {
@@ -122,7 +150,7 @@ public class SensorTest
 
         // ARRANGE
         // #################
-        SensorGeneric sensor = new SensorGeneric();
+        SensorGeneric sensor = new SensorGeneric(GenerateTestProfile());
 
         // Create a GameObject without an Emitter - should NOT be detected!
         GameObject mockObjectWithoutEmitter = new GameObject("TargetShip");
@@ -154,7 +182,7 @@ public class SensorTest
         */
 
         // ARRANGE
-        TestSensor sensor = new TestSensor();
+        TestSensor sensor = new TestSensor(GenerateTestProfile());
         sensor.detected = true; // Make sure that "DetectObject always returns true.
 
         // Create a GameObjects to populate the ConeList
@@ -189,7 +217,7 @@ public class SensorTest
         */
 
         // ARRANGE
-        TestSensor sensor = new TestSensor();
+        TestSensor sensor = new TestSensor(GenerateTestProfile());
         sensor.detected = true; // Make sure that "DetectObject always returns true.
 
         // Create a GameObjects to populate the ConeList
@@ -225,7 +253,7 @@ public class SensorTest
         */
 
         // ARRANGE
-        TestSensor sensor = new TestSensor();
+        TestSensor sensor = new TestSensor(GenerateTestProfile());
         sensor.detected = false; // Make sure that "DetectObject always returns false.
 
         // Create a GameObjects to populate the ConeList
@@ -263,7 +291,7 @@ public class SensorTest
         */
 
         // ARRANGE
-        TestSensor sensor = new TestSensor();
+        TestSensor sensor = new TestSensor(GenerateTestProfile());
         sensor.detected = true; // Make sure that "DetectObject always returns true.
 
         // Create a GameObjects to populate the ConeList

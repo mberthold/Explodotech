@@ -132,6 +132,10 @@ PrefabInstance:
       value: Station
       objectReference: {fileID: 0}
     - target: {fileID: 2871550654317746797, guid: 6950eda293b54ad4cb2e03c185ee4725, type: 3}
+      propertyPath: jsonProfile
+      value: 
+      objectReference: {fileID: 4900000, guid: 610dea8fbd38cf648b017913778b09ae, type: 3}
+    - target: {fileID: 2871550654317746797, guid: 6950eda293b54ad4cb2e03c185ee4725, type: 3}
       propertyPath: signalStrength
       value: 1000000
       objectReference: {fileID: 0}
@@ -143,6 +147,10 @@ PrefabInstance:
       propertyPath: m_LocalPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4383911648697230175, guid: 6950eda293b54ad4cb2e03c185ee4725, type: 3}
+      propertyPath: jsonProfile
+      value: 
+      objectReference: {fileID: 4900000, guid: 222b95dead178a24db5a38887388433f, type: 3}
     - target: {fileID: 7227480402735190817, guid: 6950eda293b54ad4cb2e03c185ee4725, type: 3}
       propertyPath: m_Sprite
       value: 
@@ -666,6 +674,10 @@ PrefabInstance:
       value: TargetShip
       objectReference: {fileID: 0}
     - target: {fileID: 2871550654317746797, guid: 6950eda293b54ad4cb2e03c185ee4725, type: 3}
+      propertyPath: jsonProfile
+      value: 
+      objectReference: {fileID: 4900000, guid: 610dea8fbd38cf648b017913778b09ae, type: 3}
+    - target: {fileID: 2871550654317746797, guid: 6950eda293b54ad4cb2e03c185ee4725, type: 3}
       propertyPath: signalStrength
       value: 3000
       objectReference: {fileID: 0}
@@ -673,6 +685,10 @@ PrefabInstance:
       propertyPath: visualize
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4383911648697230175, guid: 6950eda293b54ad4cb2e03c185ee4725, type: 3}
+      propertyPath: jsonProfile
+      value: 
+      objectReference: {fileID: 4900000, guid: 222b95dead178a24db5a38887388433f, type: 3}
     - target: {fileID: 7227480402735190817, guid: 6950eda293b54ad4cb2e03c185ee4725, type: 3}
       propertyPath: m_Sprite
       value: 
@@ -750,6 +766,14 @@ PrefabInstance:
       propertyPath: m_TagString
       value: player
       objectReference: {fileID: 0}
+    - target: {fileID: 2871550654317746797, guid: 6950eda293b54ad4cb2e03c185ee4725, type: 3}
+      propertyPath: jsonProfile
+      value: 
+      objectReference: {fileID: 4900000, guid: 610dea8fbd38cf648b017913778b09ae, type: 3}
+    - target: {fileID: 4383911648697230175, guid: 6950eda293b54ad4cb2e03c185ee4725, type: 3}
+      propertyPath: jsonProfile
+      value: 
+      objectReference: {fileID: 4900000, guid: 222b95dead178a24db5a38887388433f, type: 3}
     - target: {fileID: 4383911648697230175, guid: 6950eda293b54ad4cb2e03c185ee4725, type: 3}
       propertyPath: sensorRange
       value: 100
