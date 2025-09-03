@@ -18,6 +18,7 @@ public class Sensor : MonoBehaviour
     public float scanTimer;
     public bool visualize = true;
     private SensorPassive sensorPassive;
+    public TextAsset jsonProfile; // The spectral profile of the sensor.
     private List<GameObject> ObjectsInCone = new List<GameObject>(); // Objects in the cone
     public List<GameObject> DetectedObjects = new List<GameObject>(); // The Objects we can actually see!
     public List<GameObject> displayedObjects = new List<GameObject>();
@@ -30,7 +31,16 @@ public class Sensor : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        sensorPassive = new SensorPassive();
+
+
+        if (jsonProfile == null)
+        {
+            Debug.LogError("JSON profile not assigned to the Emitter!");
+            return;
+        }
+
+        SpectrumProfile profile = JsonUtility.FromJson<SpectrumProfile>(jsonProfile.text);
+        sensorPassive = new SensorPassive(profile);
 
         mesh = new Mesh();
         GetComponent<MeshFilter>().mesh = mesh;

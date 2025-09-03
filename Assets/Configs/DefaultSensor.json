@@ -1,0 +1,45 @@
+{
+  "spectrum": [
+    {
+      "emissionType": "LowFreq",
+      "strength": 1.0
+    },
+    {
+      "emissionType": "Radio",
+      "strength": 1.0
+    },
+    {
+      "emissionType": "MicroWave",
+      "strength": 1.0
+    },
+    {
+      "emissionType": "TeraHertz",
+      "strength": 1.0
+    },
+    {
+      "emissionType": "Infrared",
+      "strength": 1.0
+    },
+    {
+      "emissionType": "VisibleLight",
+      "strength": 1.0
+    },
+    {
+      "emissionType": "UltraViolett",
+      "strength": 1.0
+    },
+    {
+      "emissionType": "XRay",
+      "strength": 1.0
+    },
+    {
+      "emissionType": "GammaRay",
+      "strength": 1.0
+    },
+    {
+      "emissionType": "CosmicRay",
+      "strength": 1.0
+    }
+  ]
+  
+}
