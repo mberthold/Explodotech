@@ -34,7 +34,7 @@ public class SensorTest
         // Create a new SpectrumData entry with a single value
         BandData singleEntry = new BandData
         {
-            emissionType = "RadioWaves",
+            emissionType = "Radio",
             strength = 1.0f
         };
 
