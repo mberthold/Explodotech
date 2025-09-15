@@ -1,44 +1,55 @@
+using System.Numerics;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Vector3 = UnityEngine.Vector3;
+using Vector2 = UnityEngine.Vector2;
+using Quaternion = UnityEngine.Quaternion;
 
 public class PlayerShip : MonoBehaviour
 {
 
-    public float moveSpeed = 5f;
-    public float rotationSpeed = 100f;
+    public GameObject waypointPrefab;
 
-    private Vector2 moveInput;
-    private float rotationInput;
+
+    private Vector3? moveDestination = null;
+    private GameObject currentWaypoint;
+    private ShipCtrl shipCtrl;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        shipCtrl = GetComponent<ShipCtrl>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        
-        // Apply movement
-        Vector3 moveDirection = new Vector3(moveInput.x, moveInput.y, 0f);
-        transform.position += moveDirection * moveSpeed * Time.deltaTime;
 
-        // Apply rotation
-        transform.Rotate(0, 0, -rotationInput * rotationSpeed * Time.deltaTime);
-        
+
     }
-
-    // This method is automatically called when the "Move" action is performed.
-    public void OnMove(InputAction.CallbackContext context)
+   
+    public void OnSetWaypoint(InputAction.CallbackContext context)
     {
-        Debug.Log("OnMove!");
-        moveInput = context.ReadValue<Vector2>();
-    }
+        Debug.Log("Right-Click");
+        if (context.performed)
+        {
+            // Get the mouse position
+            Vector2 mousePosition = Mouse.current.position.ReadValue();
+            // Turn that position into the 3D position where we want to place the waypoint.
+            Vector3 worldPosition = Camera.main.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, 1));
 
-    // This method is automatically called when the "Rotate" action is performed.
-    public void OnRotate(InputAction.CallbackContext context)
-    {
-        Debug.Log("OnRotate!");
-        rotationInput = context.ReadValue<float>();
+            moveDestination = worldPosition;
+
+            // If a waypoint already exists we should delete it.
+            if (currentWaypoint != null)
+            {
+                Destroy(currentWaypoint);
+            }
+
+            // Create the new waypoint
+            currentWaypoint = Instantiate(waypointPrefab, worldPosition, Quaternion.identity);
+            shipCtrl.AddWaypoint(currentWaypoint);
+
+        }
     }
 }
