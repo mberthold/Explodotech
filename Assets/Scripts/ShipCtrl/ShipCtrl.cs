@@ -44,7 +44,7 @@ public class ShipCtrl : MonoBehaviour
         //RotateToHeading(direction);
         if (sequence.Count > 0)
         {
-            MoveToWaypointNew(sequence[0]);
+            MoveToWaypoint(sequence[0]);
         }
     }
 
@@ -112,52 +112,6 @@ public class ShipCtrl : MonoBehaviour
 
 
     public void MoveToWaypoint(GameObject waypoint)
-    {
-        Vector2 directionToDestination = waypoint.transform.position - transform.position;
-        float distanceToDestination = directionToDestination.magnitude;
-
-        float currentVelocity = rb.linearVelocity.magnitude;
-
-        // Distance needed to come to a full stop at current velocity (assuming we are pointing in the right direction)
-        float brakingDistance = (currentVelocity * currentVelocity) / (2 * acceleration);
-
-        // Account for the Flip-Maneuver
-        // How for to flip
-        // How long will this take?
-        // How far will we travel during that flip?
-        float angleToFlip = Vector2.Angle(transform.up, -directionToDestination);
-        float timeToRotate = angleToFlip / rotationSpeed;
-        float coastingDistance = currentVelocity * timeToRotate;
-
-        float totalStoppingDistance = brakingDistance + coastingDistance;
-
-        bool isBraking = distanceToDestination <= totalStoppingDistance;
-
-        Vector2 destinationHeading = isBraking ? -directionToDestination : directionToDestination;
-        RotateToHeading(destinationHeading);
-
-        // --- Apply Thrust based on Alignment ---
-        float alignment = Vector2.Dot(transform.up, destinationHeading.normalized);
-
-        Debug.Log("Alignment: " + alignment);
-
-        if (alignment > 0.95f)
-        {
-            BurnEngine();
-        }
-
-        // --- Final Stop ---
-        if (distanceToDestination < 0.1f && currentVelocity < 0.5f)
-        {
-            rb.linearVelocity = Vector2.zero;
-            sequence.RemoveAt(0);
-        }
-
-
-    }
-
-
-    public void MoveToWaypointNew(GameObject waypoint)
     {
         Vector2 directionToDestination = waypoint.transform.position - transform.position;
         float distanceToDestination = directionToDestination.magnitude;
