@@ -44,6 +44,7 @@ public class PlayerShip : MonoBehaviour
             if (currentWaypoint != null)
             {
                 Destroy(currentWaypoint);
+                shipCtrl.ClearWaypointSequence(); // And also clear the WaypointSequence
             }
 
             // Create the new waypoint

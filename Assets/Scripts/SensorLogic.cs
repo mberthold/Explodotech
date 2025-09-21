@@ -120,7 +120,7 @@ namespace ExplodotechUtils
             float strength = emitter.signalStrength;
             // Received signal strength - adjusted for distance!
             totalOverlapScore = totalOverlapScore / (distance * distance);
-            Debug.Log("Received signal: " + totalOverlapScore);
+            //Debug.Log("Received signal: " + totalOverlapScore);
 
             if (totalOverlapScore >= SignalThreshold)
             {

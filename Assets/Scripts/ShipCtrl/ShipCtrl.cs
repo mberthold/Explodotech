@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -5,6 +6,7 @@ using UnityEngine;
 public enum BrachistochronePhase
 {
     None,
+    Preparation,
     InitialRotation,
     Acceleration,
     Flip,
@@ -72,7 +74,7 @@ public class ShipCtrl : MonoBehaviour
         // Check if there is a target direction.
         if (targetDirection != Vector2.zero)
         {
-            
+
             // Calculate the target rotation based on the direction.
             Quaternion targetRotation = Quaternion.LookRotation(Vector3.forward, targetDirection);
 
@@ -94,16 +96,47 @@ public class ShipCtrl : MonoBehaviour
     public float AdjustVelocity(float magnitude)
     {
         Debug.Log("AdjustVelocity!!");
-        if (rb.linearVelocity.magnitude < magnitude)
+
+        Vector2 desiredDirection;
+
+        if (Math.Abs(magnitude - rb.linearVelocity.magnitude) < 0.1f)
         {
-            BurnEngine();
+            if (rb.linearVelocity.sqrMagnitude < 0.01f)
+            {
+                rb.linearVelocity = Vector2.zero;
+            }
+            else
+            {
+                rb.linearVelocity = rb.linearVelocity.normalized * magnitude;
+            }
+            return 0.0f;
         }
 
-        // Clamp the velocity to prevent overshooting the target magnitude.
+        // We are slower than we want to be. No need to rotate.
         if (rb.linearVelocity.magnitude > magnitude)
         {
-            rb.linearVelocity = rb.linearVelocity.normalized * magnitude;
-            return 0.0f;
+            desiredDirection = - rb.linearVelocity.normalized;
+        }
+        else
+        {
+            if (rb.linearVelocity.sqrMagnitude < 0.01f)
+            {
+                desiredDirection = transform.up;
+            }
+            else
+            {
+                // If the ship is already moving, it should accelerate in its current direction of travel.
+                desiredDirection = rb.linearVelocity.normalized;
+            }     
+        }
+
+        RotateToHeading(desiredDirection);
+
+        float alignment = Vector2.Dot(transform.up, desiredDirection.normalized);
+
+        if (alignment > 0.95f)
+        {
+            BurnEngine();
         }
 
         return (rb.linearVelocity.magnitude - magnitude) / acceleration;
@@ -129,12 +162,23 @@ public class ShipCtrl : MonoBehaviour
 
         Vector2 desiredDirection = transform.up; // We are assuming we are pointing in the right direction.
         float alignment = 0f;
-        
+
 
         switch (phase)
         {
             case BrachistochronePhase.None:
                 return;
+            case BrachistochronePhase.Preparation:
+            Debug.Log("Current Velocity: " + currentVelocity);
+                if (currentVelocity > 0f)
+                {
+                    AdjustVelocity(0f);
+                }
+                else
+                {
+                    phase = BrachistochronePhase.InitialRotation;
+                }
+                break;
             case BrachistochronePhase.InitialRotation:
                 Vector2 lateralVelocity = rb.linearVelocity - Vector2.Dot(rb.linearVelocity, directionToDestination.normalized) * directionToDestination.normalized;
                 desiredDirection = directionToDestination.normalized - lateralVelocity * 0.1f; // The 0.1f is a correction factor to tune.
@@ -175,15 +219,24 @@ public class ShipCtrl : MonoBehaviour
                 phase = BrachistochronePhase.None;
                 break;
         }
+        if (phase != BrachistochronePhase.Preparation)
+        {
+            RotateToHeading(desiredDirection);
+        }
+        //RotateToHeading(desiredDirection);
+        Debug.Log("Maneuverphase: " + phase);
 
-        RotateToHeading(desiredDirection);
-        
     }
 
     public void AddWaypoint(GameObject waypoint)
     {
         sequence.Add(waypoint);
-        phase = BrachistochronePhase.InitialRotation;
+        phase = BrachistochronePhase.Preparation;
+    }
+
+    public void ClearWaypointSequence()
+    {
+        sequence = new List<GameObject>();
     }
 
 }
